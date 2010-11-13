@@ -37,16 +37,59 @@ class TrapezoidalMap extends Panel
         drawingArea = data;
         infoArea = infobox;
     }
+    
 
-    public boolean makeMap(Segment segments[], int i, boolean flag, boolean flag1)
+    private Segment[] randPermutation(Segment segment[], int i)
+    {
+        Random random = new Random();
+        for(int k = numSegments - 1; k >= 2; k--)
+        {
+            int j = (int)(Math.random() * (double)i);
+            random.setSeed((long)k * 100L);
+            Segment lsegment = segment[k];
+            segment[k] = segment[j];
+            segment[j] = lsegment;
+        }
+
+        return segment;
+    }
+    
+    private void computeBoundingBox(Segment segment[], int i)
+    {
+        for(int j1 = 0; j1 < i; j1++)
+        {
+            int j = segment[j1].getStartingPoint().x;
+            int k = segment[j1].getStartingPoint().y;
+            int l = segment[j1].getEndingPoint().x;
+            int i1 = segment[j1].getEndingPoint().y;
+            if(j < minX)
+                minX = j;
+            if(j > maxX)
+                maxX = j;
+            if(k < minY)
+                minY = k;
+            if(k > maxY)
+                maxY = k;
+            if(l < minX)
+                minX = l;
+            if(l > maxX)
+                maxX = l;
+            if(i1 < minY)
+                minY = i1;
+            if(i1 > maxY)
+                maxY = i1;
+        }
+
+    }
+
+    public boolean createMap(Segment segments[], int i)
     {
         clear();
         parent.repaint();
-        fast = flag1;
         if(i > 0)
         {
             numSegments = i;
-            determineBox(segments, numSegments);
+            computeBoundingBox(segments, numSegments);
             Point p1 = new Point(minX - over, minY - over, -1);
             Point p2 = new Point(maxX + over, minY - over, -1);
             Point p3 = new Point(minX - over, maxY + over, -1);
@@ -70,7 +113,7 @@ class TrapezoidalMap extends Panel
             numTrapezoids++;
 
             infoArea.addItem("Randomized insertion of segments in map.");
-            S = randPerm(segments, numSegments);
+            S = randPermutation(segments, numSegments);
 
             insertSegments(S, numSegments);
 
@@ -79,88 +122,18 @@ class TrapezoidalMap extends Panel
         return true;
     }
 
-    public boolean makeMapNext(Segment alsegment[], int i, boolean flag)
+    private void insertSegments(Segment segments[], int i)
     {
-        clear();
-        if(i > 0)
-        {
-            fast = false;
-            numSegments = i;
-            determineBox(alsegment, numSegments);
-            Point point = new Point(minX - over, minY - over, -1);
-            Point vertice1 = new Point(maxX + over, minY - over, -1);
-            Point vertice2 = new Point(minX - over, maxY + over, -1);
-            Point vertice3 = new Point(maxX + over, maxY + over, -1);
-            Segment lsegment = new Segment(point, vertice1);
-            Segment lsegment1 = new Segment(vertice2, vertice3);
-            T = new Trapezoid();
-            T.name = "root";
-            T.top = lsegment;
-            T.bottom = lsegment1;
-            T.left = vertice2;
-            T.right = vertice1;
-            T.lRight = null;
-            T.uRight = null;
-            T.lLeft = null;
-            T.uLeft = null;
-            D = new Node();
-            D.node = "t";
-            D.t = T;
-            T.node = D;
-            numTrapezoids++;
-            if(flag)
-            {
-                S = randPerm(alsegment, numSegments);
-            } else
-            {
-                infoArea.addItem("Using insertion order!");
-                S = alsegment;
-            }
-            drawingArea.setInserted(-1);
-            draw(null);
-        }
-        return true;
-    }
-
-    private void insertSegments(Segment alsegment[], int i)
-    {
-        drawingArea.drawMap(alsegment, false);
+        drawingArea.drawMap(segments);
         for(int j = 0; j < i; j++)
         {
             drawingArea.setInserted(j);
-            Segment lsegment = alsegment[j];
+            Segment lsegment = segments[j];
             Trapezoid trapezoid = followSegment(lsegment);
             Trapezoid trapezoid1 = updateT(trapezoid, lsegment);
             updateD(trapezoid, lsegment, trapezoid1);
         }
 
-    }
-
-    public boolean insertNextSegment()
-    {
-        lastSegment++;
-        drawingArea.drawMap(S, true);
-        if(lastSegment < numSegments)
-        {
-            Segment lsegment = S[lastSegment];
-            drawingArea.setInserted(lastSegment);
-            Trapezoid trapezoid = followSegment(lsegment);
-            Trapezoid trapezoid1 = updateT(trapezoid, lsegment);
-            updateD(trapezoid, lsegment, trapezoid1);
-            draw(null);
-            if(lastSegment == numSegments - 1)
-            {
-                infoArea.addItem("All " + (lastSegment + 1) + " segments inserted!");
-                return true;
-            } else
-            {
-                infoArea.addItem("Number of inserted segments " + (lastSegment + 1));
-                return false;
-            }
-        } else
-        {
-            return true;
-        }
     }
 
     private void drawTRFound(Trapezoid trapezoid){
@@ -805,7 +778,6 @@ class TrapezoidalMap extends Panel
                     nodeFound = nodeFound.right;
                 }
         	}
-
             if(nodeFound.node == "y")
             {
                 if(Computation.counterClockWise(nodeFound.segment.left, nodeFound.segment.right, p) == -1 || Computation.counterClockWise(nodeFound.segment.left, nodeFound.segment.right, p) == 0 && Computation.counterClockWise(nodeFound.segment.left, nodeFound.segment.right, q) == -1)
@@ -818,31 +790,24 @@ class TrapezoidalMap extends Panel
         }
     }
 
-    public boolean findPoint(Point point, boolean flag)
+    public boolean findPoint(Point point)
     {
 
         infoArea.addItem("\nLooking for query point : ("+point.x+" , "+point.y+")");        
         long timerStart = System.currentTimeMillis();          		
 
-        Node node = D;
-        do
-        {
+	    Node node = D;
+	    while(true)
+	    {
             if(node.node == "x")
             {
                 if(node.isLeft(point))
                 {
                     node = node.left;
-                    if(flag)
-                    {
-//                        infoArea.addItem("Left <-- ");
-                    }
+
                 } else
                 {
                     node = node.right;
-                    if(flag)
-                    {
-//                        infoArea.addItem("Right --> ");
-                    }
                 }
                 continue;
             }
@@ -851,19 +816,11 @@ class TrapezoidalMap extends Panel
             if(Computation.isAbove(node.segment.left, node.segment.right, point))
             {
                 node = node.left;
-                if(flag)
-                {
-//                    infoArea.addItem("Above /\\ ");
-                }
             } else
             {
                 node = node.right;
-                if(flag)
-                {
-//                    infoArea.addItem("Below \\/ ");
-                }
             }
-        } while(true);
+        }
         
         long timerEnd = System.currentTimeMillis();
 		long runningTime = Math.abs(timerEnd - timerStart);
@@ -884,10 +841,10 @@ class TrapezoidalMap extends Panel
         return true;
     }
 
-    private Trapezoid followSegment(Segment lsegment)
+    private Trapezoid followSegment(Segment seg)
     {
-        Point p = lsegment.startp();
-        Point q = lsegment.endp();
+        Point p = seg.getStartingPoint();
+        Point q = seg.getEndingPoint();
 
         Node node = find(D, p, q);
 
@@ -895,9 +852,9 @@ class TrapezoidalMap extends Panel
         Trapezoid trapezoid1 = trapezoid;
         trapezoid1.next = null;
 
-        while(q.liesToRightOf(trapezoid.rightp())) 
+        while(q.isRightOf(trapezoid.rightp())) 
         {
-            if(Computation.isAbove(lsegment.left, lsegment.right, trapezoid.rightp()))
+            if(Computation.isAbove(seg.left, seg.right, trapezoid.rightp()))
                 trapezoid.next = trapezoid.lRight;
             else
                 trapezoid.next = trapezoid.uRight;
@@ -909,77 +866,20 @@ class TrapezoidalMap extends Panel
         return trapezoid1;
     }
 
-    private void upDateLeftNeighbors(Trapezoid trapezoid, Trapezoid trapezoid1)
+    private void upDateLeftNeighbors(Trapezoid tr1, Trapezoid tr2)
     {
-        if(trapezoid1.uLeft != null)
-            trapezoid1.uLeft.uRight = trapezoid;
-        if(trapezoid1.lLeft != null)
-            trapezoid1.lLeft.lRight = trapezoid;
+        if(tr2.uLeft != null)
+            tr2.uLeft.uRight = tr1;
+        if(tr2.lLeft != null)
+            tr2.lLeft.lRight = tr1;
     }
 
-    private void upDateRightNeighbors(Trapezoid trapezoid, Trapezoid trapezoid1)
+    private void upDateRightNeighbors(Trapezoid tr1, Trapezoid tr2)
     {
-        if(trapezoid1.uRight != null)
-            trapezoid1.uRight.uLeft = trapezoid;
-        if(trapezoid1.lRight != null)
-            trapezoid1.lRight.lLeft = trapezoid;
-    }
-
-    private Segment[] randPerm(Segment alsegment[], int i)
-    {
-        Random random = new Random();
-        for(int k = numSegments - 1; k >= 2; k--)
-        {
-            int j = (int)(Math.random() * (double)i);
-            random.setSeed((long)k * 100L);
-            Segment lsegment = alsegment[k];
-            alsegment[k] = alsegment[j];
-            alsegment[j] = lsegment;
-        }
-
-        return alsegment;
-    }
-
-//    private int nextInt(int i, Random random)
-//    {
-//        if(i <= 0)
-//            throw new IllegalArgumentException("n must be positive");
-//        int j;
-//        int k;
-//        do
-//        {
-//            k = random.nextInt();
-//            j = k % i;
-//        } while((k - j) + (i - 1) < 0);
-//        return j;
-//    }
-
-    private void determineBox(Segment alsegment[], int i)
-    {
-        for(int j1 = 0; j1 < i; j1++)
-        {
-            int j = alsegment[j1].startp().x;
-            int k = alsegment[j1].startp().y;
-            int l = alsegment[j1].endp().x;
-            int i1 = alsegment[j1].endp().y;
-            if(j < minX)
-                minX = j;
-            if(j > maxX)
-                maxX = j;
-            if(k < minY)
-                minY = k;
-            if(k > maxY)
-                maxY = k;
-            if(l < minX)
-                minX = l;
-            if(l > maxX)
-                maxX = l;
-            if(i1 < minY)
-                minY = i1;
-            if(i1 > maxY)
-                maxY = i1;
-        }
-
+        if(tr2.uRight != null)
+            tr2.uRight.uLeft = tr1;
+        if(tr2.lRight != null)
+            tr2.lRight.lLeft = tr1;
     }
 
     public void clear()

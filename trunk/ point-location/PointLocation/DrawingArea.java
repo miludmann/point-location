@@ -100,7 +100,7 @@ class DrawingArea extends Canvas
             Segment lsegment = segments[i];
             if(lsegment != null)
             {
-                g.drawLine(lsegment.startp().getX(), lsegment.startp().getY(), lsegment.endp().getX(), lsegment.endp().getY());
+                g.drawLine(lsegment.getStartingPoint().getX(), lsegment.getStartingPoint().getY(), lsegment.getEndingPoint().getX(), lsegment.getEndingPoint().getY());
                 Point point = lsegment.left;
                 Point vertice1 = lsegment.right;
                 if(state != "inserting" && i <= inserted && i >= 0 && (state == "building" || state == "fastbuild" || state == "query") && point != null && vertice1 != null)
@@ -148,19 +148,15 @@ class DrawingArea extends Canvas
         return new Insets(5, 5, 5, 5);
     }
 
-    public void drawTrapezoids(boolean flag)
+    public void drawTrapezoids()
     {
-        fast = flag;
         inserted = -1;
     }
 
-    public void drawMap(Segment alsegment[], boolean flag)
+    public void drawMap(Segment segment[])
     {
-        if(fast && !flag)
-            state = "fastbuild";
-        else
-            state = "building";
-        randSeg = alsegment;
+        state = "building";
+        randSeg = segment;
     }
 
     public void setInserted(int i)
@@ -228,7 +224,7 @@ class DrawingArea extends Canvas
                 {
                     tmpVerticeE = vertice1;
                     counter = 2;
-                    if(tmpVerticeS.getIndex() == tmpVerticeE.getIndex())
+                    if(tmpVerticeS.getId() == tmpVerticeE.getId())
                     {
                         tmpVerticeS = vertice1;
                         counter = 1;
@@ -244,7 +240,7 @@ class DrawingArea extends Canvas
                     boolean flag2 = false;
                     for(int l = 0; l < numSegments; l++)
                     {
-                        if(segments[l].startp().getIndex() != tmpVerticeS.getIndex() && segments[l].startp().getIndex() != tmpVerticeE.getIndex() || segments[l].endp().getIndex() != tmpVerticeS.getIndex() && segments[l].endp().getIndex() != tmpVerticeE.getIndex())
+                        if(segments[l].getStartingPoint().getId() != tmpVerticeS.getId() && segments[l].getStartingPoint().getId() != tmpVerticeE.getId() || segments[l].getEndingPoint().getId() != tmpVerticeS.getId() && segments[l].getEndingPoint().getId() != tmpVerticeE.getId())
                             continue;
                         flag2 = true;
                         break;
@@ -256,7 +252,7 @@ class DrawingArea extends Canvas
                         for(int i1 = 0; !flag3 && i1 < numSegments; i1++)
                         {
                             flag3 = Computation.areNotCrossing(lsegment, segments[i1]);
-                            if(flag3 && (lsegment.startp().getIndex() == segments[i1].startp().getIndex() || lsegment.startp().getIndex() == segments[i1].endp().getIndex() || lsegment.endp().getIndex() == segments[i1].endp().getIndex() || lsegment.endp().getIndex() == segments[i1].startp().getIndex()))
+                            if(flag3 && (lsegment.getStartingPoint().getId() == segments[i1].getStartingPoint().getId() || lsegment.getStartingPoint().getId() == segments[i1].getEndingPoint().getId() || lsegment.getEndingPoint().getId() == segments[i1].getEndingPoint().getId() || lsegment.getEndingPoint().getId() == segments[i1].getStartingPoint().getId()))
                                 flag3 = false;
                         }
 

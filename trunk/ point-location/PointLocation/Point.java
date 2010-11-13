@@ -18,7 +18,7 @@ class Point
         id = k;
     }
 
-    public boolean liesToRightOf(Point point)
+    public boolean isRightOf(Point point)
     {
         return x > point.x;
     }
@@ -33,17 +33,17 @@ class Point
         return y;
     }
 
-    public void addX(int i)
+    public void setX(int i)
     {
         x = i;
     }
 
-    public void addY(int i)
+    public void setY(int i)
     {
         y = i;
     }
 
-    public int getIndex()
+    public int getId()
     {
         return id;
     }
