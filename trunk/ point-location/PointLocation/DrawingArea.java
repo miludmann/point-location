@@ -31,6 +31,8 @@ class DrawingArea extends Canvas
     private TrapezoidPolygon trapezoid;
     private Component object;
     private StatusBar status;
+    
+    // Change the value below to test the program with this number of segments :
     private int NBSEGMENTS = 35000 ;
     Graphics g;
     Graphics g2;
@@ -52,6 +54,11 @@ class DrawingArea extends Canvas
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		addMouseMotionListener(this);
 		
+		//Uncomment the part below if you wish to test the program with NBSEGMENTS in input
+		//Beware : the segments are not randomly inserted, so the test is certainly a bit biased
+		//since they are all the same
+		
+		/*
 		int ecart = 1;
 		for(int i = 0; i<NBSEGMENTS; i+=2)
 		{
@@ -68,6 +75,7 @@ class DrawingArea extends Canvas
 			numSegments+= 2;
 			numVertices += 4;
 		}
+		*/
     }
 
     public void draw()
