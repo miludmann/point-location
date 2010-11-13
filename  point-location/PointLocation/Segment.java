@@ -37,22 +37,22 @@ class Segment
         return i <= 0;
     }
 
-    public Point startp()
+    public Point getStartingPoint()
     {
         return left;
     }
 
-    public Point endp()
+    public Point getEndingPoint()
     {
         return right;
     }
 
-    public void addStartp(Point point)
+    public void setStartingPoint(Point point)
     {
         right = point;
     }
 
-    public void addEndp(Point point)
+    public void setEndingPoint(Point point)
     {
         left = point;
     }

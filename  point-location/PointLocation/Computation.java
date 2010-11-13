@@ -82,10 +82,10 @@ class Computation extends Component
 
     public static boolean areNotCrossing(Segment lsegment, Segment lsegment1)
     {
-        int i = counterClockWise(lsegment.startp(), lsegment.endp(), lsegment1.startp());
-        int j = counterClockWise(lsegment.startp(), lsegment.endp(), lsegment1.endp());
-        int k = counterClockWise(lsegment1.startp(), lsegment1.endp(), lsegment.startp());
-        int l = counterClockWise(lsegment1.startp(), lsegment1.endp(), lsegment.endp());
+        int i = counterClockWise(lsegment.getStartingPoint(), lsegment.getEndingPoint(), lsegment1.getStartingPoint());
+        int j = counterClockWise(lsegment.getStartingPoint(), lsegment.getEndingPoint(), lsegment1.getEndingPoint());
+        int k = counterClockWise(lsegment1.getStartingPoint(), lsegment1.getEndingPoint(), lsegment.getStartingPoint());
+        int l = counterClockWise(lsegment1.getStartingPoint(), lsegment1.getEndingPoint(), lsegment.getEndingPoint());
         return i * j < 0 && k * l < 0 || i * j * k * l == 0;
     }
 

@@ -10,11 +10,6 @@ class TrapezoidPanel extends Panel
     Button clear;
     Button query;
     Button find;
-    Button bNext;
-    Checkbox rand;
-    Checkbox route;
-    Checkbox speed;
-    Checkbox cNext;
     static final String BUILD = "build";
     static final String CLEAR = "clear";
     static final String QUERY = "query";
@@ -42,10 +37,6 @@ class TrapezoidPanel extends Panel
         find = new Button("Point Location");
         find.setEnabled(false);
         find.setActionCommand("location");
-        rand = new Checkbox("Rand. order", true);
-        route = new Checkbox("Show the path", true);
-        speed = new Checkbox("Fast", true);
-        cNext = new Checkbox("Insert manually", false);
         build.addActionListener(this);
         clear.addActionListener(this);
         query.addActionListener(this);
@@ -77,28 +68,22 @@ class TrapezoidPanel extends Panel
         if(command == "computeMap")
             if(drawingArea.numSegments > 0)
             {
-                boolean flag = speed.getState();
-                boolean flag1 = cNext.getState();
                 map.clear();
                 drawingArea.repaintArea();
-                drawingArea.drawTrapezoids(speed.getState());
-                if(!flag1)
-                {
-                    long timerStart = System.currentTimeMillis();          		
-                    map.makeMap(drawingArea.segments, drawingArea.numSegments, rand.getState(), flag);
-            		long timerEnd = System.currentTimeMillis();
-            		long runningTime = Math.abs(timerEnd - timerStart);
+                drawingArea.drawTrapezoids();
 
-            		System.out.println("Running time to compute the map : "+runningTime+" ms");
-            		
-                    info.addItem("\nPress 'Input Query Point' and \n     click anywhere in the drawing area.\nThen, press 'Point Location' to highlight\n     the corresponding area.");
-                } else
-                {
-                    map.makeMapNext(drawingArea.segments, drawingArea.numSegments, rand.getState());
-                }
+                long timerStart = System.currentTimeMillis();          		
+                map.createMap(drawingArea.segments, drawingArea.numSegments);
+        		long timerEnd = System.currentTimeMillis();
+        		long runningTime = Math.abs(timerEnd - timerStart);
+
+        		System.out.println("Running time to compute the map : "+runningTime+" ms");
+        		
+                info.addItem("\nPress 'Input Query Point' and \n     click anywhere in the drawing area.\nThen, press 'Point Location' to highlight\n     the corresponding area.");
+
                 query.setEnabled(true);
                 find.setEnabled(true);
-//                build.setEnabled(false);
+                build.setEnabled(false);
 
                 return;
             } else
@@ -125,7 +110,7 @@ class TrapezoidPanel extends Panel
         {
             long timerStart = System.currentTimeMillis();          		
 
-            map.findPoint(drawingArea.queryPoint, route.getState());
+            map.findPoint(drawingArea.queryPoint);
             
             long timerEnd = System.currentTimeMillis();
     		long runningTime = Math.abs(timerEnd - timerStart);

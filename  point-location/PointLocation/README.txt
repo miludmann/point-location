@@ -19,8 +19,11 @@ README file  :
 ===============================================================================
 How to run the project :
 
-- run pointLocation.jar
-- or use Eclipse (or another IDE) to run it) and download the whole source code
+- run the Java ARchive : pointLocation.jar. You can find it on the download
+page of the Google Code Webpage of the project : 
+     http://code.google.com/p/point-location/downloads/list
+- or use Eclipse (or another IDE) to run it) and download and run 
+the whole source code, as an applet or an application.
 
 ===============================================================================
 Implementation language :
@@ -46,6 +49,8 @@ Windows 7
 How to use the program itself :
 
 Please follow instructions in the report.
+Or simply follow what is written in the information box on the left, once
+the program is launched.
 
 ===============================================================================
 Creating test files :
