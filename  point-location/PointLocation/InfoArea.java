@@ -1,7 +1,9 @@
 import java.awt.*;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
-class InfoArea extends Panel
+public class InfoArea extends Panel
 {
 
     TextArea field;

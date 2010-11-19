@@ -2,7 +2,9 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
 public class MainWindow extends Applet
 {

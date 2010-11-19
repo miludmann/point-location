@@ -1,8 +1,10 @@
 import java.awt.*;
 import java.util.Random;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
-class TrapezoidalMap extends Panel
+public class TrapezoidalMap extends Panel
 {
     InfoArea infoArea;
     static final String xNode = "x";
@@ -11,13 +13,12 @@ class TrapezoidalMap extends Panel
     static final boolean up = true;
     static final boolean down = false;
     private boolean fast;
-    private int numTrapezoids;
+    private int nbTrap;
     private Node D;
     private Trapezoid T;
     private DrawingArea drawingArea;
     private Segment S[];
     private int numSegments;
-    private int lastSegment;
     private int maxX;
     private int maxY;
     private int minX;
@@ -30,7 +31,6 @@ class TrapezoidalMap extends Panel
     {
         fast = true;
         numSegments = -1;
-        lastSegment = -1;
         minX = Integer.MAX_VALUE;
         minY = Integer.MAX_VALUE;
         parent = component;
@@ -84,7 +84,7 @@ class TrapezoidalMap extends Panel
 
     public boolean createMap(Segment segments[], int i)
     {
-        clear();
+        clrData();
         parent.repaint();
         if(i > 0)
         {
@@ -94,12 +94,12 @@ class TrapezoidalMap extends Panel
             Point p2 = new Point(maxX + over, minY - over, -1);
             Point p3 = new Point(minX - over, maxY + over, -1);
             Point p4 = new Point(maxX + over, maxY + over, -1);
-            Segment lsegment = new Segment(p1, p2);
-            Segment lsegment1 = new Segment(p3, p4);
+            Segment seg1 = new Segment(p1, p2);
+            Segment seg2 = new Segment(p3, p4);
             T = new Trapezoid();
             T.name = "root";
-            T.top = lsegment;
-            T.bottom = lsegment1;
+            T.top = seg1;
+            T.bottom = seg2;
             T.left = p3;
             T.right = p2;
             T.lRight = null;
@@ -110,7 +110,7 @@ class TrapezoidalMap extends Panel
             D.node = "t";
             D.t = T;
             T.node = D;
-            numTrapezoids++;
+            nbTrap++;
 
             infoArea.addItem("Randomized insertion of segments in map.");
             S = randPermutation(segments, numSegments);
@@ -129,9 +129,9 @@ class TrapezoidalMap extends Panel
         {
             drawingArea.setInserted(j);
             Segment lsegment = segments[j];
-            Trapezoid trapezoid = followSegment(lsegment);
-            Trapezoid trapezoid1 = updateT(trapezoid, lsegment);
-            updateD(trapezoid, lsegment, trapezoid1);
+            Trapezoid tr1 = followSegment(lsegment);
+            Trapezoid tr2 = updateT(tr1, lsegment);
+            updateD(tr1, lsegment, tr2);
         }
 
     }
@@ -189,397 +189,397 @@ class TrapezoidalMap extends Panel
         paint(g);
     }
 
-    private Trapezoid updateT(Trapezoid trapezoid, Segment lsegment)
+    private Trapezoid updateT(Trapezoid newTrap, Segment segment)
     {
         int i = 0;
-        Trapezoid trapezoid1 = trapezoid;
-        if(trapezoid1.next == null)
+        Trapezoid m_tr = newTrap;
+        if(m_tr.next == null)
         {
-            Trapezoid trapezoid2 = null;
-            Trapezoid trapezoid4 = null;
-            Trapezoid trapezoid6 = new Trapezoid();
-            Trapezoid trapezoid8 = new Trapezoid();
+            Trapezoid trA1 = null;
+            Trapezoid trB1 = null;
+            Trapezoid trC1 = new Trapezoid();
+            Trapezoid trD = new Trapezoid();
             i = 2;
-            trapezoid6.left = lsegment.left;
-            trapezoid6.right = lsegment.right;
-            trapezoid6.bottom = lsegment;
-            trapezoid6.top = trapezoid1.top;
-            trapezoid6.name = "C" + numTrapezoids;
-            drawingArea.trap.add(trapezoid6);
-            numTrapezoids++;
-            trapezoid8.top = lsegment;
-            trapezoid8.bottom = trapezoid1.bottom;
-            trapezoid8.right = lsegment.right;
-            trapezoid8.left = lsegment.left;
-            trapezoid8.name = "D" + numTrapezoids;
-            drawingArea.trap.add(trapezoid8);
-            numTrapezoids++;
-            if(lsegment.left != trapezoid1.left)
+            trC1.left = segment.left;
+            trC1.right = segment.right;
+            trC1.bottom = segment;
+            trC1.top = m_tr.top;
+            trC1.name = "C" + nbTrap;
+            drawingArea.trap.add(trC1);
+            nbTrap++;
+            trD.top = segment;
+            trD.bottom = m_tr.bottom;
+            trD.right = segment.right;
+            trD.left = segment.left;
+            trD.name = "D" + nbTrap;
+            drawingArea.trap.add(trD);
+            nbTrap++;
+            if(segment.left != m_tr.left)
             {
-                trapezoid2 = new Trapezoid();
-                trapezoid2.top = trapezoid1.top;
-                trapezoid2.bottom = trapezoid1.bottom;
-                trapezoid2.left = trapezoid1.left;
-                trapezoid2.right = lsegment.left;
-                trapezoid2.lLeft = trapezoid1.lLeft;
-                trapezoid2.uLeft = trapezoid1.uLeft;
-                trapezoid2.lRight = trapezoid8;
-                trapezoid2.uRight = trapezoid6;
-                trapezoid2.node = trapezoid1.node;
-                trapezoid2.name = "A" + numTrapezoids;
-                drawingArea.trap.add(trapezoid2);
-                numTrapezoids++;
-                upDateLeftNeighbors(trapezoid2, trapezoid1);
-                trapezoid6.lLeft = null;
-                trapezoid6.uLeft = trapezoid2;
-                trapezoid8.lLeft = trapezoid2;
-                trapezoid8.uLeft = null;
+                trA1 = new Trapezoid();
+                trA1.top = m_tr.top;
+                trA1.bottom = m_tr.bottom;
+                trA1.left = m_tr.left;
+                trA1.right = segment.left;
+                trA1.lLeft = m_tr.lLeft;
+                trA1.uLeft = m_tr.uLeft;
+                trA1.lRight = trD;
+                trA1.uRight = trC1;
+                trA1.node = m_tr.node;
+                trA1.name = "A" + nbTrap;
+                drawingArea.trap.add(trA1);
+                nbTrap++;
+                updateLeft(trA1, m_tr);
+                trC1.lLeft = null;
+                trC1.uLeft = trA1;
+                trD.lLeft = trA1;
+                trD.uLeft = null;
                 i++;
-                Computation.setVerticalLine(trapezoid2, null, lsegment);
+                Computation.setVerticalLine(trA1, null, segment);
             } else
             {
-                trapezoid6.uLeft = trapezoid1.uLeft;
-                trapezoid6.lLeft = null;
-                trapezoid8.lLeft = trapezoid1.lLeft;
-                trapezoid8.uLeft = null;
-                if(trapezoid1.uLeft != null)
-                    trapezoid1.uLeft.uRight = trapezoid6;
-                if(trapezoid1.lLeft != null)
-                    trapezoid1.lLeft.lRight = trapezoid8;
+                trC1.uLeft = m_tr.uLeft;
+                trC1.lLeft = null;
+                trD.lLeft = m_tr.lLeft;
+                trD.uLeft = null;
+                if(m_tr.uLeft != null)
+                    m_tr.uLeft.uRight = trC1;
+                if(m_tr.lLeft != null)
+                    m_tr.lLeft.lRight = trD;
             }
-            if(lsegment.right != trapezoid1.right)
+            if(segment.right != m_tr.right)
             {
-                trapezoid4 = new Trapezoid();
-                trapezoid4.top = trapezoid1.top;
-                trapezoid4.bottom = trapezoid1.bottom;
-                trapezoid4.left = lsegment.right;
-                trapezoid4.right = trapezoid1.right;
-                trapezoid4.lRight = trapezoid1.lRight;
-                trapezoid4.uRight = trapezoid1.uRight;
-                trapezoid4.lLeft = trapezoid8;
-                trapezoid4.uLeft = trapezoid6;
-                trapezoid4.node = trapezoid1.node;
-                trapezoid4.name = "B" + numTrapezoids;
-                drawingArea.trap.add(trapezoid4);
-                numTrapezoids++;
-                upDateRightNeighbors(trapezoid4, trapezoid1);
-                trapezoid6.lRight = null;
-                trapezoid6.uRight = trapezoid4;
-                trapezoid8.lRight = trapezoid4;
-                trapezoid8.uRight = null;
+                trB1 = new Trapezoid();
+                trB1.top = m_tr.top;
+                trB1.bottom = m_tr.bottom;
+                trB1.left = segment.right;
+                trB1.right = m_tr.right;
+                trB1.lRight = m_tr.lRight;
+                trB1.uRight = m_tr.uRight;
+                trB1.lLeft = trD;
+                trB1.uLeft = trC1;
+                trB1.node = m_tr.node;
+                trB1.name = "B" + nbTrap;
+                drawingArea.trap.add(trB1);
+                nbTrap++;
+                updateRight(trB1, m_tr);
+                trC1.lRight = null;
+                trC1.uRight = trB1;
+                trD.lRight = trB1;
+                trD.uRight = null;
                 i++;
-                Computation.setVerticalLine(null, trapezoid4, lsegment);
+                Computation.setVerticalLine(null, trB1, segment);
             } else
             {
-                trapezoid6.uRight = trapezoid1.uRight;
-                trapezoid6.lRight = null;
-                trapezoid8.lRight = trapezoid1.lRight;
-                trapezoid8.uRight = null;
-                if(trapezoid1.uRight != null)
-                    trapezoid1.uRight.uLeft = trapezoid6;
-                if(trapezoid1.lRight != null)
-                    trapezoid1.lRight.lLeft = trapezoid8;
+                trC1.uRight = m_tr.uRight;
+                trC1.lRight = null;
+                trD.lRight = m_tr.lRight;
+                trD.uRight = null;
+                if(m_tr.uRight != null)
+                    m_tr.uRight.uLeft = trC1;
+                if(m_tr.lRight != null)
+                    m_tr.lRight.lLeft = trD;
             }
-            trapezoid8.node = trapezoid1.node;
-            trapezoid6.node = trapezoid1.node;
-            trapezoid6.next = trapezoid8;
-            trapezoid8.next = null;
-            draw(trapezoid1);
-            if(trapezoid2 != null)
+            trD.node = m_tr.node;
+            trC1.node = m_tr.node;
+            trC1.next = trD;
+            trD.next = null;
+            draw(m_tr);
+            if(trA1 != null)
             {
-                if(trapezoid4 != null)
+                if(trB1 != null)
                 {
-                    trapezoid2.next = trapezoid4;
-                    trapezoid4.next = trapezoid6;
+                    trA1.next = trB1;
+                    trB1.next = trC1;
                 } else
                 {
-                    trapezoid2.next = trapezoid6;
+                    trA1.next = trC1;
                 }
-                return trapezoid2;
+                return trA1;
             }
-            if(trapezoid4 != null)
+            if(trB1 != null)
             {
-                trapezoid4.next = trapezoid6;
-                return trapezoid4;
+                trB1.next = trC1;
+                return trB1;
             } else
             {
-                return trapezoid6;
+                return trC1;
             }
         }
-        Trapezoid trapezoid3 = null;
-        Trapezoid trapezoid5 = null;
-        Trapezoid trapezoid7 = null;
-        Trapezoid trapezoid9 = null;
-        Trapezoid trapezoid10 = null;
-        Trapezoid trapezoid11 = null;
-        if(lsegment.left != trapezoid1.left)
+        Trapezoid tr1 = null;
+        Trapezoid tr2 = null;
+        Trapezoid tr3 = null;
+        Trapezoid trA2 = null;
+        Trapezoid trB2 = null;
+        Trapezoid trC2 = null;
+        if(segment.left != m_tr.left)
         {
-            trapezoid9 = new Trapezoid();
-            trapezoid10 = new Trapezoid();
-            trapezoid11 = new Trapezoid();
+            trA2 = new Trapezoid();
+            trB2 = new Trapezoid();
+            trC2 = new Trapezoid();
             i += 3;
-            trapezoid9.top = trapezoid1.top;
-            trapezoid9.bottom = trapezoid1.bottom;
-            trapezoid9.left = trapezoid1.left;
-            trapezoid9.right = lsegment.left;
-            trapezoid9.lLeft = trapezoid1.lLeft;
-            trapezoid9.uLeft = trapezoid1.uLeft;
-            trapezoid9.lRight = trapezoid11;
-            trapezoid9.uRight = trapezoid10;
-            trapezoid9.node = trapezoid1.node;
-            trapezoid9.name = "A" + numTrapezoids;
-            drawingArea.trap.add(trapezoid9);
+            trA2.top = m_tr.top;
+            trA2.bottom = m_tr.bottom;
+            trA2.left = m_tr.left;
+            trA2.right = segment.left;
+            trA2.lLeft = m_tr.lLeft;
+            trA2.uLeft = m_tr.uLeft;
+            trA2.lRight = trC2;
+            trA2.uRight = trB2;
+            trA2.node = m_tr.node;
+            trA2.name = "A" + nbTrap;
+            drawingArea.trap.add(trA2);
 
-            numTrapezoids++;
-            upDateLeftNeighbors(trapezoid9, trapezoid1);
-            trapezoid10.top = trapezoid1.top;
-            trapezoid10.bottom = lsegment;
-            trapezoid10.left = lsegment.left;
-            trapezoid10.lLeft = null;
-            trapezoid10.uLeft = trapezoid9;
-            trapezoid10.name = "B" + numTrapezoids;
-            drawingArea.trap.add(trapezoid10);
+            nbTrap++;
+            updateLeft(trA2, m_tr);
+            trB2.top = m_tr.top;
+            trB2.bottom = segment;
+            trB2.left = segment.left;
+            trB2.lLeft = null;
+            trB2.uLeft = trA2;
+            trB2.name = "B" + nbTrap;
+            drawingArea.trap.add(trB2);
 
-            numTrapezoids++;
-            trapezoid11.top = lsegment;
-            trapezoid11.bottom = trapezoid1.bottom;
-            trapezoid11.left = lsegment.left;
-            trapezoid11.lLeft = trapezoid9;
-            trapezoid11.uLeft = null;
-            trapezoid11.name = "C" + numTrapezoids;
-            drawingArea.trap.add(trapezoid11);
+            nbTrap++;
+            trC2.top = segment;
+            trC2.bottom = m_tr.bottom;
+            trC2.left = segment.left;
+            trC2.lLeft = trA2;
+            trC2.uLeft = null;
+            trC2.name = "C" + nbTrap;
+            drawingArea.trap.add(trC2);
 
-            numTrapezoids++;
+            nbTrap++;
         } else
         {
-            trapezoid10 = new Trapezoid();
-            trapezoid11 = new Trapezoid();
+            trB2 = new Trapezoid();
+            trC2 = new Trapezoid();
             i += 2;
-            trapezoid10.top = trapezoid1.top;
-            trapezoid10.bottom = lsegment;
-            trapezoid10.left = trapezoid1.left;
-            trapezoid10.name = "B" + numTrapezoids;
-            drawingArea.trap.add(trapezoid10);
+            trB2.top = m_tr.top;
+            trB2.bottom = segment;
+            trB2.left = m_tr.left;
+            trB2.name = "B" + nbTrap;
+            drawingArea.trap.add(trB2);
 
-            numTrapezoids++;
-            trapezoid10.uLeft = trapezoid1.uLeft;
-            trapezoid10.lLeft = null;
-            trapezoid11.lLeft = trapezoid1.lLeft;
-            trapezoid11.uLeft = null;
-            if(trapezoid1.uLeft != null)
-                trapezoid1.uLeft.uRight = trapezoid10;
-            if(trapezoid1.lLeft != null)
-                trapezoid1.lLeft.lRight = trapezoid11;
-            trapezoid11.top = lsegment;
-            trapezoid11.bottom = trapezoid1.bottom;
-            trapezoid11.left = trapezoid1.left;
-            trapezoid11.name = "C" + numTrapezoids;
-            drawingArea.trap.add(trapezoid11);
+            nbTrap++;
+            trB2.uLeft = m_tr.uLeft;
+            trB2.lLeft = null;
+            trC2.lLeft = m_tr.lLeft;
+            trC2.uLeft = null;
+            if(m_tr.uLeft != null)
+                m_tr.uLeft.uRight = trB2;
+            if(m_tr.lLeft != null)
+                m_tr.lLeft.lRight = trC2;
+            trC2.top = segment;
+            trC2.bottom = m_tr.bottom;
+            trC2.left = m_tr.left;
+            trC2.name = "C" + nbTrap;
+            drawingArea.trap.add(trC2);
 
-            numTrapezoids++;
+            nbTrap++;
         }
-        trapezoid10.uRight = trapezoid1.uRight;
-        trapezoid10.lRight = null;
-        trapezoid11.lRight = trapezoid1.lRight;
-        trapezoid11.uRight = null;
-        if(trapezoid1.uRight != null)
-            trapezoid1.uRight.uLeft = trapezoid10;
-        if(trapezoid1.lRight != null)
-            trapezoid1.lRight.lLeft = trapezoid11;
-        trapezoid10.node = trapezoid1.node;
-        trapezoid11.node = trapezoid1.node;
-        trapezoid1.end = trapezoid9;
-        trapezoid1.up = trapezoid10;
-        trapezoid1.down = trapezoid11;
-        draw(trapezoid1);
-        trapezoid1 = trapezoid1.next;
-        trapezoid5 = trapezoid10;
-        trapezoid7 = trapezoid11;
-        for(; trapezoid1.next != null; trapezoid1 = trapezoid1.next)
+        trB2.uRight = m_tr.uRight;
+        trB2.lRight = null;
+        trC2.lRight = m_tr.lRight;
+        trC2.uRight = null;
+        if(m_tr.uRight != null)
+            m_tr.uRight.uLeft = trB2;
+        if(m_tr.lRight != null)
+            m_tr.lRight.lLeft = trC2;
+        trB2.node = m_tr.node;
+        trC2.node = m_tr.node;
+        m_tr.end = trA2;
+        m_tr.up = trB2;
+        m_tr.down = trC2;
+        draw(m_tr);
+        m_tr = m_tr.next;
+        tr2 = trB2;
+        tr3 = trC2;
+        for(; m_tr.next != null; m_tr = m_tr.next)
         {
-            Trapezoid trapezoid12 = new Trapezoid();
-            trapezoid12.name = "U" + numTrapezoids;
-            drawingArea.trap.add(trapezoid12);
+            Trapezoid trU = new Trapezoid();
+            trU.name = "U" + nbTrap;
+            drawingArea.trap.add(trU);
 
-            numTrapezoids++;
+            nbTrap++;
             i++;
-            if(Computation.isAbove(lsegment.left, lsegment.right, trapezoid1.left))
+            if(Computation.isAbove(segment.left, segment.right, m_tr.left))
             {
-                trapezoid5.right = trapezoid1.left;
-                trapezoid12.top = trapezoid1.top;
-                trapezoid12.bottom = lsegment;
-                trapezoid12.left = trapezoid1.left;
-                trapezoid12.lLeft = trapezoid5;
-                trapezoid12.uLeft = trapezoid1.uLeft;
-                trapezoid12.uRight = trapezoid1.uRight;
-                trapezoid5.lRight = trapezoid12;
-                trapezoid5 = trapezoid12;
-                if(trapezoid1.uLeft != null)
-                    trapezoid1.uLeft.uRight = trapezoid12;
-                if(trapezoid1.uRight != null)
-                    trapezoid1.uRight.uLeft = trapezoid12;
-                Computation.cutLine(trapezoid1, lsegment, false);
-                trapezoid7.lRight = trapezoid1.lRight;
-                trapezoid7.node = trapezoid1.node;
+                tr2.right = m_tr.left;
+                trU.top = m_tr.top;
+                trU.bottom = segment;
+                trU.left = m_tr.left;
+                trU.lLeft = tr2;
+                trU.uLeft = m_tr.uLeft;
+                trU.uRight = m_tr.uRight;
+                tr2.lRight = trU;
+                tr2 = trU;
+                if(m_tr.uLeft != null)
+                    m_tr.uLeft.uRight = trU;
+                if(m_tr.uRight != null)
+                    m_tr.uRight.uLeft = trU;
+                Computation.cutLine(m_tr, segment, false);
+                tr3.lRight = m_tr.lRight;
+                tr3.node = m_tr.node;
             } else
             {
-                trapezoid7.right = trapezoid1.left;
-                trapezoid12.top = lsegment;
-                trapezoid12.bottom = trapezoid1.bottom;
-                trapezoid12.left = trapezoid1.left;
-                trapezoid12.lLeft = trapezoid1.lLeft;
-                trapezoid12.uLeft = trapezoid7;
-                trapezoid12.lRight = trapezoid1.lRight;
-                trapezoid7.uRight = trapezoid12;
-                trapezoid7 = trapezoid12;
-                if(trapezoid1.lLeft != null)
-                    trapezoid1.lLeft.lRight = trapezoid12;
-                if(trapezoid1.lRight != null)
-                    trapezoid1.lRight.lLeft = trapezoid12;
-                Computation.cutLine(trapezoid1, lsegment, true);
-                trapezoid5.uRight = trapezoid1.uRight;
-                trapezoid5.node = trapezoid1.node;
+                tr3.right = m_tr.left;
+                trU.top = segment;
+                trU.bottom = m_tr.bottom;
+                trU.left = m_tr.left;
+                trU.lLeft = m_tr.lLeft;
+                trU.uLeft = tr3;
+                trU.lRight = m_tr.lRight;
+                tr3.uRight = trU;
+                tr3 = trU;
+                if(m_tr.lLeft != null)
+                    m_tr.lLeft.lRight = trU;
+                if(m_tr.lRight != null)
+                    m_tr.lRight.lLeft = trU;
+                Computation.cutLine(m_tr, segment, true);
+                tr2.uRight = m_tr.uRight;
+                tr2.node = m_tr.node;
             }
-            trapezoid12.node = trapezoid1.node;
-            trapezoid1.up = trapezoid5;
-            trapezoid1.down = trapezoid7;
-            draw(trapezoid1);
+            trU.node = m_tr.node;
+            m_tr.up = tr2;
+            m_tr.down = tr3;
+            draw(m_tr);
         }
 
-        Trapezoid trapezoid13 = null;
-        Trapezoid trapezoid14 = null;
-        Trapezoid trapezoid15 = null;
-        if(Computation.isAbove(lsegment.left, lsegment.right, trapezoid1.left))
+        Trapezoid trN = null;
+        Trapezoid trL = null;
+        Trapezoid trM = null;
+        if(Computation.isAbove(segment.left, segment.right, m_tr.left))
         {
-            trapezoid15 = trapezoid7;
-            trapezoid15.right = lsegment.right;
-            trapezoid14 = new Trapezoid();
-            trapezoid14.top = trapezoid1.top;
-            trapezoid14.bottom = lsegment;
-            trapezoid14.left = trapezoid1.left;
-            trapezoid14.right = lsegment.right;
-            trapezoid14.lLeft = trapezoid5;
-            trapezoid14.uLeft = trapezoid1.uLeft;
-            if(trapezoid1.uLeft != null)
-                trapezoid1.uLeft.uRight = trapezoid14;
-            trapezoid14.name = "L" + numTrapezoids;
-            drawingArea.trap.add(trapezoid14);
+            trM = tr3;
+            trM.right = segment.right;
+            trL = new Trapezoid();
+            trL.top = m_tr.top;
+            trL.bottom = segment;
+            trL.left = m_tr.left;
+            trL.right = segment.right;
+            trL.lLeft = tr2;
+            trL.uLeft = m_tr.uLeft;
+            if(m_tr.uLeft != null)
+                m_tr.uLeft.uRight = trL;
+            trL.name = "L" + nbTrap;
+            drawingArea.trap.add(trL);
 
-            numTrapezoids++;
-            trapezoid5.lRight = trapezoid14;
-            trapezoid5.right = trapezoid1.left;
-            Computation.cutLine(trapezoid1, lsegment, false);
-            trapezoid14.node = trapezoid1.node;
+            nbTrap++;
+            tr2.lRight = trL;
+            tr2.right = m_tr.left;
+            Computation.cutLine(m_tr, segment, false);
+            trL.node = m_tr.node;
         } else
         {
-            trapezoid14 = trapezoid5;
-            trapezoid14.right = lsegment.right;
-            trapezoid15 = new Trapezoid();
-            trapezoid15.top = lsegment;
-            trapezoid15.bottom = trapezoid1.bottom;
-            trapezoid15.left = trapezoid1.left;
-            trapezoid15.right = lsegment.right;
-            trapezoid15.lLeft = trapezoid1.lLeft;
-            trapezoid15.uLeft = trapezoid7;
-            if(trapezoid1.lLeft != null)
-                trapezoid1.lLeft.lRight = trapezoid15;
-            trapezoid15.name = "M" + numTrapezoids;
-            drawingArea.trap.add(trapezoid15);
+            trL = tr2;
+            trL.right = segment.right;
+            trM = new Trapezoid();
+            trM.top = segment;
+            trM.bottom = m_tr.bottom;
+            trM.left = m_tr.left;
+            trM.right = segment.right;
+            trM.lLeft = m_tr.lLeft;
+            trM.uLeft = tr3;
+            if(m_tr.lLeft != null)
+                m_tr.lLeft.lRight = trM;
+            trM.name = "M" + nbTrap;
+            drawingArea.trap.add(trM);
 
-            numTrapezoids++;
-            trapezoid7.uRight = trapezoid15;
-            trapezoid7.right = trapezoid1.left;
-            Computation.cutLine(trapezoid1, lsegment, true);
-            trapezoid15.node = trapezoid1.node;
+            nbTrap++;
+            tr3.uRight = trM;
+            tr3.right = m_tr.left;
+            Computation.cutLine(m_tr, segment, true);
+            trM.node = m_tr.node;
         }
-        if(lsegment.right != trapezoid1.right)
+        if(segment.right != m_tr.right)
         {
-            trapezoid13 = new Trapezoid();
+            trN = new Trapezoid();
             i++;
-            trapezoid13.top = trapezoid1.top;
-            trapezoid13.bottom = trapezoid1.bottom;
-            trapezoid13.left = lsegment.right;
-            trapezoid13.right = trapezoid1.right;
-            trapezoid13.lLeft = trapezoid15;
-            trapezoid13.uLeft = trapezoid14;
-            trapezoid13.lRight = trapezoid1.lRight;
-            trapezoid13.uRight = trapezoid1.uRight;
-            trapezoid13.name = "N" + numTrapezoids;
-            drawingArea.trap.add(trapezoid13);
+            trN.top = m_tr.top;
+            trN.bottom = m_tr.bottom;
+            trN.left = segment.right;
+            trN.right = m_tr.right;
+            trN.lLeft = trM;
+            trN.uLeft = trL;
+            trN.lRight = m_tr.lRight;
+            trN.uRight = m_tr.uRight;
+            trN.name = "N" + nbTrap;
+            drawingArea.trap.add(trN);
 
-            numTrapezoids++;
-            trapezoid13.node = trapezoid1.node;
-            upDateRightNeighbors(trapezoid13, trapezoid1);
-            trapezoid14.lRight = null;
-            trapezoid14.uRight = trapezoid13;
-            trapezoid15.lRight = trapezoid13;
-            trapezoid15.uRight = null;
+            nbTrap++;
+            trN.node = m_tr.node;
+            updateRight(trN, m_tr);
+            trL.lRight = null;
+            trL.uRight = trN;
+            trM.lRight = trN;
+            trM.uRight = null;
         } else
         {
-            trapezoid14.uRight = trapezoid1.uRight;
-            trapezoid14.lRight = null;
-            trapezoid15.lRight = trapezoid1.lRight;
-            trapezoid15.uRight = null;
-            if(trapezoid1.uRight != null)
-                trapezoid1.uRight.uLeft = trapezoid14;
-            if(trapezoid1.lRight != null)
-                trapezoid1.lRight.lLeft = trapezoid15;
+            trL.uRight = m_tr.uRight;
+            trL.lRight = null;
+            trM.lRight = m_tr.lRight;
+            trM.uRight = null;
+            if(m_tr.uRight != null)
+                m_tr.uRight.uLeft = trL;
+            if(m_tr.lRight != null)
+                m_tr.lRight.lLeft = trM;
         }
-        trapezoid1.up = trapezoid14;
-        trapezoid1.down = trapezoid15;
-        trapezoid1.end = trapezoid13;
-        Trapezoid trapezoid16 = null;
-        Trapezoid trapezoid17 = null;
-        if(trapezoid.left != lsegment.left)
-            trapezoid16 = trapezoid;
-        if(trapezoid1.right != lsegment.right)
-            trapezoid17 = trapezoid1;
-        Computation.setVerticalLine(trapezoid16, trapezoid17, lsegment);
-        draw(trapezoid1);
-        return trapezoid3;
+        m_tr.up = trL;
+        m_tr.down = trM;
+        m_tr.end = trN;
+        Trapezoid trLeft = null;
+        Trapezoid trRight = null;
+        if(newTrap.left != segment.left)
+            trLeft = newTrap;
+        if(m_tr.right != segment.right)
+            trRight = m_tr;
+        Computation.setVerticalLine(trLeft, trRight, segment);
+        draw(m_tr);
+        return tr1;
     }
 
-    private void updateD(Trapezoid trapezoid, Segment lsegment, Trapezoid trapezoid1)
+    private void updateD(Trapezoid tr1, Segment lsegment, Trapezoid tr2)
     {
-        if(trapezoid.next == null)
+        if(tr1.next == null)
         {
-            Node node = trapezoid1.node;
-            Trapezoid trapezoid3 = node.t;
-            if(trapezoid3.left != lsegment.left)
+            Node node = tr2.node;
+            Trapezoid trTmp = node.t;
+            if(trTmp.left != lsegment.left)
             {
                 node.node = "x";
                 node.p = lsegment.left;
                 node.t = null;
                 node.left = new Node();
                 node.left.node = "t";
-                node.left.t = trapezoid1;
+                node.left.t = tr2;
                 node.left.t.node = node.left;
                 node.right = new Node();
                 node = node.right;
-                trapezoid1 = trapezoid1.next;
+                tr2 = tr2.next;
             }
-            if(trapezoid3.right != lsegment.right)
+            if(trTmp.right != lsegment.right)
             {
                 node.node = "x";
                 node.p = lsegment.right;
                 node.t = null;
                 node.right = new Node();
                 node.right.node = "t";
-                node.right.t = trapezoid1;
+                node.right.t = tr2;
                 node.right.t.node = node.right;
-                trapezoid1 = trapezoid1.next;
+                tr2 = tr2.next;
                 node.left = new Node();
                 node.left.node = "y";
                 node.left.segment = lsegment;
                 node.left.t = null;
                 node.left.left = new Node();
                 node.left.left.node = "t";
-                node.left.left.t = trapezoid1;
+                node.left.left.t = tr2;
                 node.left.left.t.node = node.left.left;
-                trapezoid1 = trapezoid1.next;
+                tr2 = tr2.next;
                 node.left.right = new Node();
                 node.left.right.node = "t";
-                node.left.right.t = trapezoid1;
+                node.left.right.t = tr2;
                 node.left.right.t.node = node.left.right;
                 return;
             } else
@@ -589,180 +589,180 @@ class TrapezoidalMap extends Panel
                 node.t = null;
                 node.left = new Node();
                 node.left.node = "t";
-                node.left.t = trapezoid1;
+                node.left.t = tr2;
                 node.left.t.node = node.left;
-                trapezoid1 = trapezoid1.next;
+                tr2 = tr2.next;
                 node.right = new Node();
                 node.right.node = "t";
-                node.right.t = trapezoid1;
+                node.right.t = tr2;
                 node.right.t.node = node.right;
                 return;
             }
         }
-        Trapezoid trapezoid2 = null;
-        Node node1 = trapezoid.node;
-        if(trapezoid.left != lsegment.left)
+        Trapezoid trTmp = null;
+        Node node = tr1.node;
+        if(tr1.left != lsegment.left)
         {
-            node1.node = "x";
-            node1.p = lsegment.left;
-            node1.t = null;
-            node1.left = new Node();
-            node1.left.node = "t";
-            node1.left.t = trapezoid.end;
-            node1.left.t.node = node1.left;
-            node1.right = new Node();
-            node1.right.node = "y";
-            node1.right.segment = lsegment;
-            node1.right.left = new Node();
-            node1.right.left.node = "t";
-            node1.right.left.t = trapezoid.up;
-            node1.right.left.t.node = node1.right.left;
-            node1.right.right = new Node();
-            node1.right.right.node = "t";
-            node1.right.right.t = trapezoid.down;
-            node1.right.right.t.node = node1.right.right;
-            trapezoid.end.next = null;
-            trapezoid2 = trapezoid.end;
-            trapezoid.up.next = trapezoid2;
-            trapezoid2 = trapezoid.up;
-            trapezoid.down.next = trapezoid2;
-            trapezoid2 = trapezoid.down;
+            node.node = "x";
+            node.p = lsegment.left;
+            node.t = null;
+            node.left = new Node();
+            node.left.node = "t";
+            node.left.t = tr1.end;
+            node.left.t.node = node.left;
+            node.right = new Node();
+            node.right.node = "y";
+            node.right.segment = lsegment;
+            node.right.left = new Node();
+            node.right.left.node = "t";
+            node.right.left.t = tr1.up;
+            node.right.left.t.node = node.right.left;
+            node.right.right = new Node();
+            node.right.right.node = "t";
+            node.right.right.t = tr1.down;
+            node.right.right.t.node = node.right.right;
+            tr1.end.next = null;
+            trTmp = tr1.end;
+            tr1.up.next = trTmp;
+            trTmp = tr1.up;
+            tr1.down.next = trTmp;
+            trTmp = tr1.down;
         } else
         {
-            node1.node = "y";
-            node1.segment = lsegment;
-            node1.t = null;
-            node1.left = new Node();
-            node1.left.node = "t";
-            node1.left.t = trapezoid.up;
-            node1.left.t.node = node1.left;
-            node1.right = new Node();
-            node1.right.node = "t";
-            node1.right.t = trapezoid.down;
-            node1.right.t.node = node1.right;
-            trapezoid.up.next = null;
-            trapezoid2 = trapezoid.up;
-            trapezoid.down.next = trapezoid2;
-            trapezoid2 = trapezoid.down;
+            node.node = "y";
+            node.segment = lsegment;
+            node.t = null;
+            node.left = new Node();
+            node.left.node = "t";
+            node.left.t = tr1.up;
+            node.left.t.node = node.left;
+            node.right = new Node();
+            node.right.node = "t";
+            node.right.t = tr1.down;
+            node.right.t.node = node.right;
+            tr1.up.next = null;
+            trTmp = tr1.up;
+            tr1.down.next = trTmp;
+            trTmp = tr1.down;
         }
-        trapezoid = trapezoid.next;
+        tr1 = tr1.next;
         boolean flag = false;
         boolean flag1 = false;
-        while(trapezoid.next != null) 
+        while(tr1.next != null) 
         {
-            Trapezoid trapezoid4 = trapezoid2;
-            node1 = trapezoid.node;
-            node1.node = "y";
-            node1.segment = lsegment;
-            node1.t = null;
-            for(; trapezoid4 != null; trapezoid4 = trapezoid4.next)
+            Trapezoid trLoop = trTmp;
+            node = tr1.node;
+            node.node = "y";
+            node.segment = lsegment;
+            node.t = null;
+            for(; trLoop != null; trLoop = trLoop.next)
             {
-                if(trapezoid4 == trapezoid.up)
+                if(trLoop == tr1.up)
                     flag = true;
-                if(trapezoid4 == trapezoid.down)
+                if(trLoop == tr1.down)
                     flag1 = true;
             }
 
             if(flag)
             {
-                node1.left = trapezoid.up.node;
+                node.left = tr1.up.node;
             } else
             {
-                node1.left = new Node();
-                node1.left.node = "t";
-                node1.left.t = trapezoid.up;
-                node1.left.t.node = node1.left;
-                trapezoid.up.next = trapezoid2;
-                trapezoid2 = trapezoid.up;
+                node.left = new Node();
+                node.left.node = "t";
+                node.left.t = tr1.up;
+                node.left.t.node = node.left;
+                tr1.up.next = trTmp;
+                trTmp = tr1.up;
             }
             if(flag1)
             {
-                node1.right = trapezoid.down.node;
+                node.right = tr1.down.node;
             } else
             {
-                node1.right = new Node();
-                node1.right.node = "t";
-                node1.right.t = trapezoid.down;
-                node1.right.t.node = node1.right;
-                trapezoid.down.next = trapezoid2;
-                trapezoid2 = trapezoid.down;
+                node.right = new Node();
+                node.right.node = "t";
+                node.right.t = tr1.down;
+                node.right.t.node = node.right;
+                tr1.down.next = trTmp;
+                trTmp = tr1.down;
             }
-            trapezoid = trapezoid.next;
+            tr1 = tr1.next;
             flag1 = false;
             flag = false;
         }
-        node1 = trapezoid.node;
-        for(Trapezoid trapezoid5 = trapezoid2; trapezoid5 != null; trapezoid5 = trapezoid5.next)
+        node = tr1.node;
+        for(Trapezoid trIter = trTmp; trIter != null; trIter = trIter.next)
         {
-            if(trapezoid5 == trapezoid.up)
+            if(trIter == tr1.up)
                 flag = true;
-            if(trapezoid5 == trapezoid.down)
+            if(trIter == tr1.down)
                 flag1 = true;
         }
 
-        if(trapezoid.right != lsegment.right)
+        if(tr1.right != lsegment.right)
         {
-            node1.node = "x";
-            node1.p = lsegment.right;
-            node1.t = null;
-            node1.right = new Node();
-            node1.right.node = "t";
-            node1.right.t = trapezoid.end;
-            node1.right.t.node = node1.right;
-            node1.left = new Node();
-            node1.left.node = "y";
-            node1.left.segment = lsegment;
+            node.node = "x";
+            node.p = lsegment.right;
+            node.t = null;
+            node.right = new Node();
+            node.right.node = "t";
+            node.right.t = tr1.end;
+            node.right.t.node = node.right;
+            node.left = new Node();
+            node.left.node = "y";
+            node.left.segment = lsegment;
             if(flag1)
             {
-                node1.left.right = trapezoid.down.node;
+                node.left.right = tr1.down.node;
             } else
             {
-                node1.left.right = new Node();
-                node1.left.right.node = "t";
-                node1.left.right.t = trapezoid.down;
-                node1.left.right.t.node = node1.left.right;
+                node.left.right = new Node();
+                node.left.right.node = "t";
+                node.left.right.t = tr1.down;
+                node.left.right.t.node = node.left.right;
             }
             if(flag)
             {
-                node1.left.left = trapezoid.up.node;
+                node.left.left = tr1.up.node;
                 return;
             } else
             {
-                node1.left.left = new Node();
-                node1.left.left.node = "t";
-                node1.left.left.t = trapezoid.up;
-                node1.left.left.t.node = node1.left.left;
+                node.left.left = new Node();
+                node.left.left.node = "t";
+                node.left.left.t = tr1.up;
+                node.left.left.t.node = node.left.left;
                 return;
             }
         }
-        node1.node = "y";
-        node1.segment = lsegment;
-        node1.t = null;
+        node.node = "y";
+        node.segment = lsegment;
+        node.t = null;
         if(flag1)
         {
-            node1.right = trapezoid.down.node;
+            node.right = tr1.down.node;
         } else
         {
-            node1.right = new Node();
-            node1.right.node = "t";
-            node1.right.t = trapezoid.down;
-            node1.right.t.node = node1.right;
+            node.right = new Node();
+            node.right.node = "t";
+            node.right.t = tr1.down;
+            node.right.t.node = node.right;
         }
         if(flag)
         {
-            node1.left = trapezoid.up.node;
+            node.left = tr1.up.node;
             return;
         } else
         {
-            node1.left = new Node();
-            node1.left.node = "t";
-            node1.left.t = trapezoid.up;
-            node1.left.t.node = node1.left;
+            node.left = new Node();
+            node.left.node = "t";
+            node.left.t = tr1.up;
+            node.left.t.node = node.left;
             return;
         }
     }
 
-    private Node find(Node node, Point p, Point q)
+    private Node findNode(Node node, Point p, Point q)
     {
         Node nodeFound;
     	nodeFound = node;
@@ -827,17 +827,23 @@ class TrapezoidalMap extends Panel
 		System.out.println("----->>> Running time to locate query point : "+runningTime+" ms");	
         infoArea.addItem("Query point found in : " + node.t.name);
         if(node.t.uLeft != null)
+        {
             infoArea.addItem("     Trap. on upper left: " + node.t.uLeft.name);
-        if(node.t.lLeft != null)
-            infoArea.addItem("     Trap. on lower left: " + node.t.lLeft.name);
+        }
         if(node.t.uRight != null)
-            infoArea.addItem("     Trap. on upper right: " + node.t.uRight.name);
+        {
+        	infoArea.addItem("     Trap. on upper right: " + node.t.uRight.name);
+        }
+        if(node.t.lLeft != null)
+        {
+        	infoArea.addItem("     Trap. on lower left: " + node.t.lLeft.name);
+        }
         if(node.t.lRight != null)
-            infoArea.addItem("     Trap. on lower right: " + node.t.lRight.name);
+        {
+        	infoArea.addItem("     Trap. on lower right: " + node.t.lRight.name);
+        }
         drawTRFound(node.t);
         
-
-		
         return true;
     }
 
@@ -846,27 +852,27 @@ class TrapezoidalMap extends Panel
         Point p = seg.getStartingPoint();
         Point q = seg.getEndingPoint();
 
-        Node node = find(D, p, q);
+        Node node = findNode(D, p, q);
 
-        Trapezoid trapezoid = node.t;
-        Trapezoid trapezoid1 = trapezoid;
-        trapezoid1.next = null;
+        Trapezoid trTmp = node.t;
+        Trapezoid trResult = trTmp;
+        trResult.next = null;
 
-        while(q.isRightOf(trapezoid.rightp())) 
+        while(q.isRightOf(trTmp.rightp())) 
         {
-            if(Computation.isAbove(seg.left, seg.right, trapezoid.rightp()))
-                trapezoid.next = trapezoid.lRight;
+            if(Computation.isAbove(seg.left, seg.right, trTmp.rightp()))
+                trTmp.next = trTmp.lRight;
             else
-                trapezoid.next = trapezoid.uRight;
-            trapezoid = trapezoid.next;
-            if(trapezoid == null)
-                return trapezoid1;
+                trTmp.next = trTmp.uRight;
+            trTmp = trTmp.next;
+            if(trTmp == null)
+                return trResult;
         }
-        trapezoid.next = null;
-        return trapezoid1;
+        trTmp.next = null;
+        return trResult;
     }
 
-    private void upDateLeftNeighbors(Trapezoid tr1, Trapezoid tr2)
+    private void updateLeft(Trapezoid tr1, Trapezoid tr2)
     {
         if(tr2.uLeft != null)
             tr2.uLeft.uRight = tr1;
@@ -874,7 +880,7 @@ class TrapezoidalMap extends Panel
             tr2.lLeft.lRight = tr1;
     }
 
-    private void upDateRightNeighbors(Trapezoid tr1, Trapezoid tr2)
+    private void updateRight(Trapezoid tr1, Trapezoid tr2)
     {
         if(tr2.uRight != null)
             tr2.uRight.uLeft = tr1;
@@ -882,10 +888,9 @@ class TrapezoidalMap extends Panel
             tr2.lRight.lLeft = tr1;
     }
 
-    public void clear()
+    public void clrData()
     {
-        numTrapezoids = 0;
-        lastSegment = -1;
+        nbTrap = 0;
         D = null;
         T = null;
         S = null;

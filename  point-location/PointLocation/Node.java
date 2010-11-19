@@ -1,4 +1,7 @@
-class Node
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public class Node
 {
 
     public String node;

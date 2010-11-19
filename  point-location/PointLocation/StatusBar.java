@@ -1,24 +1,13 @@
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Panel;
-import java.awt.TextArea;
 import java.awt.TextField;
 import java.text.DecimalFormat;
 
-import javax.swing.BorderFactory ;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 /**
- * <p>
- * La barre d'état située en bas de la fenêtre pour ainsi que d'autres informations
- * </p>
  * @author Depoyant Guillaume & Ludmann Michaël
- * @see FenetrePrincipale
  */
 @SuppressWarnings("serial")
 public class StatusBar extends Panel implements Status

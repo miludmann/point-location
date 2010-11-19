@@ -1,4 +1,7 @@
-class Segment
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public class Segment
 {
 
     public Point left;

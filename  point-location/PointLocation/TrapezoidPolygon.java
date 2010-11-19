@@ -1,4 +1,7 @@
-class TrapezoidPolygon
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public class TrapezoidPolygon
 {
 
     int x[];

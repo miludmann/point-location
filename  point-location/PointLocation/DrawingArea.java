@@ -5,10 +5,11 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.JPopupMenu;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
-class DrawingArea extends Canvas
-    implements MouseListener, MouseMotionListener
+public class DrawingArea extends Canvas implements MouseListener, MouseMotionListener
 {
 	static final String BUILDING = "building";
     static final String FASTBUILD = "fastbuild";

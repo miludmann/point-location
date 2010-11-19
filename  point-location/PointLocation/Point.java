@@ -1,4 +1,7 @@
-class Point
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public class Point
 {
 
     public int x;
