@@ -29,50 +29,50 @@ public class Trapezoid
         right = null;
     }
 
-    Trapezoid(Segment lsegment, Segment lsegment1, Point point, Point point2)
+    Trapezoid(Segment segTop, Segment segBottom, Point leftPoint, Point rightPoint)
     {
-        top = lsegment;
-        bottom = lsegment1;
-        left = point;
-        right = point2;
+        top = segTop;
+        bottom = segBottom;
+        left = leftPoint;
+        right = rightPoint;
     }
 
-    public Segment top()
+    public Segment getTop()
     {
         return top;
     }
 
-    public Segment bottom()
+    public Segment getBottom()
     {
         return bottom;
     }
 
-    public Point leftp()
+    public Point getLeft()
     {
         return left;
     }
 
-    public Point rightp()
+    public Point getRight()
     {
         return right;
     }
 
-    public void addTop(Segment lsegment)
+    public void setTop(Segment lsegment)
     {
         top = lsegment;
     }
 
-    public void bottom(Segment lsegment)
+    public void setBottom(Segment lsegment)
     {
         bottom = lsegment;
     }
 
-    public void leftp(Point point)
+    public void setLeft(Point point)
     {
         left = point;
     }
 
-    public void rightp(Point point)
+    public void setRight(Point point)
     {
         right = point;
     }

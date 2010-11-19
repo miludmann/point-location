@@ -539,16 +539,16 @@ public class TrapezoidalMap extends Panel
         return tr1;
     }
 
-    private void updateD(Trapezoid tr1, Segment lsegment, Trapezoid tr2)
+    private void updateD(Trapezoid tr1, Segment segment, Trapezoid tr2)
     {
         if(tr1.next == null)
         {
             Node node = tr2.node;
             Trapezoid trTmp = node.t;
-            if(trTmp.left != lsegment.left)
+            if(trTmp.left != segment.left)
             {
                 node.node = "x";
-                node.p = lsegment.left;
+                node.p = segment.left;
                 node.t = null;
                 node.left = new Node();
                 node.left.node = "t";
@@ -558,10 +558,10 @@ public class TrapezoidalMap extends Panel
                 node = node.right;
                 tr2 = tr2.next;
             }
-            if(trTmp.right != lsegment.right)
+            if(trTmp.right != segment.right)
             {
                 node.node = "x";
-                node.p = lsegment.right;
+                node.p = segment.right;
                 node.t = null;
                 node.right = new Node();
                 node.right.node = "t";
@@ -570,7 +570,7 @@ public class TrapezoidalMap extends Panel
                 tr2 = tr2.next;
                 node.left = new Node();
                 node.left.node = "y";
-                node.left.segment = lsegment;
+                node.left.segment = segment;
                 node.left.t = null;
                 node.left.left = new Node();
                 node.left.left.node = "t";
@@ -585,7 +585,7 @@ public class TrapezoidalMap extends Panel
             } else
             {
                 node.node = "y";
-                node.segment = lsegment;
+                node.segment = segment;
                 node.t = null;
                 node.left = new Node();
                 node.left.node = "t";
@@ -601,10 +601,10 @@ public class TrapezoidalMap extends Panel
         }
         Trapezoid trTmp = null;
         Node node = tr1.node;
-        if(tr1.left != lsegment.left)
+        if(tr1.left != segment.left)
         {
             node.node = "x";
-            node.p = lsegment.left;
+            node.p = segment.left;
             node.t = null;
             node.left = new Node();
             node.left.node = "t";
@@ -612,7 +612,7 @@ public class TrapezoidalMap extends Panel
             node.left.t.node = node.left;
             node.right = new Node();
             node.right.node = "y";
-            node.right.segment = lsegment;
+            node.right.segment = segment;
             node.right.left = new Node();
             node.right.left.node = "t";
             node.right.left.t = tr1.up;
@@ -630,7 +630,7 @@ public class TrapezoidalMap extends Panel
         } else
         {
             node.node = "y";
-            node.segment = lsegment;
+            node.segment = segment;
             node.t = null;
             node.left = new Node();
             node.left.node = "t";
@@ -653,7 +653,7 @@ public class TrapezoidalMap extends Panel
             Trapezoid trLoop = trTmp;
             node = tr1.node;
             node.node = "y";
-            node.segment = lsegment;
+            node.segment = segment;
             node.t = null;
             for(; trLoop != null; trLoop = trLoop.next)
             {
@@ -700,10 +700,10 @@ public class TrapezoidalMap extends Panel
                 flag1 = true;
         }
 
-        if(tr1.right != lsegment.right)
+        if(tr1.right != segment.right)
         {
             node.node = "x";
-            node.p = lsegment.right;
+            node.p = segment.right;
             node.t = null;
             node.right = new Node();
             node.right.node = "t";
@@ -711,7 +711,7 @@ public class TrapezoidalMap extends Panel
             node.right.t.node = node.right;
             node.left = new Node();
             node.left.node = "y";
-            node.left.segment = lsegment;
+            node.left.segment = segment;
             if(flag1)
             {
                 node.left.right = tr1.down.node;
@@ -736,7 +736,7 @@ public class TrapezoidalMap extends Panel
             }
         }
         node.node = "y";
-        node.segment = lsegment;
+        node.segment = segment;
         node.t = null;
         if(flag1)
         {
@@ -858,9 +858,9 @@ public class TrapezoidalMap extends Panel
         Trapezoid trResult = trTmp;
         trResult.next = null;
 
-        while(q.isRightOf(trTmp.rightp())) 
+        while(q.isRightOf(trTmp.getRight())) 
         {
-            if(Computation.isAbove(seg.left, seg.right, trTmp.rightp()))
+            if(Computation.isAbove(seg.left, seg.right, trTmp.getRight()))
                 trTmp.next = trTmp.lRight;
             else
                 trTmp.next = trTmp.uRight;

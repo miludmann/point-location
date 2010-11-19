@@ -252,7 +252,7 @@ public class DrawingArea extends Canvas implements MouseListener, MouseMotionLis
                         Segment lsegment = new Segment(tmpVerticeS, tmpVerticeE);
                         for(int i1 = 0; !flag3 && i1 < numSegments; i1++)
                         {
-                            flag3 = Computation.areNotCrossing(lsegment, segments[i1]);
+                            flag3 = Computation.doNotIntersect(lsegment, segments[i1]);
                             if(flag3 && (lsegment.getStartingPoint().getId() == segments[i1].getStartingPoint().getId() || lsegment.getStartingPoint().getId() == segments[i1].getEndingPoint().getId() || lsegment.getEndingPoint().getId() == segments[i1].getEndingPoint().getId() || lsegment.getEndingPoint().getId() == segments[i1].getStartingPoint().getId()))
                                 flag3 = false;
                         }

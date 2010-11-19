@@ -10,34 +10,34 @@ public class Computation extends Component
     {
     }
 
-    public static void setVerticalLine(Trapezoid trapezoid, Trapezoid trapezoid1, Segment lsegment)
+    public static void setVerticalLine(Trapezoid trLeft, Trapezoid trRight, Segment segment)
     {
-        if(trapezoid != null)
+        if(trLeft != null)
         {
-            float f = (float)(trapezoid.top.right.x * 100) - (float)(trapezoid.top.left.x * 100);
-            float f2 = (float)(trapezoid.bottom.right.x * 100) - (float)(trapezoid.bottom.left.x * 100);
+            float f = (float)(trLeft.top.right.x * 100) - (float)(trLeft.top.left.x * 100);
+            float f2 = (float)(trLeft.bottom.right.x * 100) - (float)(trLeft.bottom.left.x * 100);
             if(f != 0.0F && f2 != 0.0F)
             {
-                float f5 = ((float)(trapezoid.top.right.y * 100) - (float)(trapezoid.top.left.y * 100)) / f;
-                lsegment.left.up = (int)(f5 * ((float)(lsegment.left.x * 100) - (float)(trapezoid.top.left.x * 100)) + (float)(trapezoid.top.left.y * 100));
-                lsegment.left.up /= 100;
-                f5 = ((float)(trapezoid.bottom.right.y * 100) - (float)(trapezoid.bottom.left.y * 100)) / f2;
-                lsegment.left.down = (int)(f5 * ((float)(lsegment.left.x * 100) - (float)(trapezoid.bottom.left.x * 100)) + (float)(trapezoid.bottom.left.y * 100));
-                lsegment.left.down /= 100;
+                float f5 = ((float)(trLeft.top.right.y * 100) - (float)(trLeft.top.left.y * 100)) / f;
+                segment.left.up = (int)(f5 * ((float)(segment.left.x * 100) - (float)(trLeft.top.left.x * 100)) + (float)(trLeft.top.left.y * 100));
+                segment.left.up /= 100;
+                f5 = ((float)(trLeft.bottom.right.y * 100) - (float)(trLeft.bottom.left.y * 100)) / f2;
+                segment.left.down = (int)(f5 * ((float)(segment.left.x * 100) - (float)(trLeft.bottom.left.x * 100)) + (float)(trLeft.bottom.left.y * 100));
+                segment.left.down /= 100;
             }
         }
-        if(trapezoid1 != null)
+        if(trRight != null)
         {
-            float f1 = (float)(trapezoid1.top.right.x * 100) - (float)(trapezoid1.top.left.x * 100);
-            float f3 = (float)(trapezoid1.bottom.right.x * 100) - (float)(trapezoid1.bottom.left.x * 100);
+            float f1 = (float)(trRight.top.right.x * 100) - (float)(trRight.top.left.x * 100);
+            float f3 = (float)(trRight.bottom.right.x * 100) - (float)(trRight.bottom.left.x * 100);
             if(f1 != 0.0F && f3 != 0.0F)
             {
-                float f7 = ((float)(trapezoid1.top.right.y * 100) - (float)(trapezoid1.top.left.y * 100)) / f1;
-                lsegment.right.up = (int)(f7 * ((float)(lsegment.right.x * 100) - (float)(trapezoid1.top.left.x * 100)) + (float)(trapezoid1.top.left.y * 100));
-                lsegment.right.up /= 100;
-                f7 = ((float)(trapezoid1.bottom.right.y * 100) - (float)(trapezoid1.bottom.left.y * 100)) / f3;
-                lsegment.right.down = (int)(f7 * ((float)(lsegment.right.x * 100) - (float)(trapezoid1.bottom.left.x * 100)) + (float)(trapezoid1.bottom.left.y * 100));
-                lsegment.right.down /= 100;
+                float f7 = ((float)(trRight.top.right.y * 100) - (float)(trRight.top.left.y * 100)) / f1;
+                segment.right.up = (int)(f7 * ((float)(segment.right.x * 100) - (float)(trRight.top.left.x * 100)) + (float)(trRight.top.left.y * 100));
+                segment.right.up /= 100;
+                f7 = ((float)(trRight.bottom.right.y * 100) - (float)(trRight.bottom.left.y * 100)) / f3;
+                segment.right.down = (int)(f7 * ((float)(segment.right.x * 100) - (float)(trRight.bottom.left.x * 100)) + (float)(trRight.bottom.left.y * 100));
+                segment.right.down /= 100;
             }
         }
     }
@@ -50,21 +50,21 @@ public class Computation extends Component
 
     public static TrapezoidPolygon trapezoidToPolygon(Trapezoid trapezoid)
     {
-        TrapezoidPolygon trpolygon = null;
+        TrapezoidPolygon trPoly = null;
         if(trapezoid != null)
         {
-            trpolygon = new TrapezoidPolygon();
+            trPoly = new TrapezoidPolygon();
             float f = (float)trapezoid.top.right.x - (float)trapezoid.top.left.x;
             float f1 = (float)trapezoid.bottom.right.x - (float)trapezoid.bottom.left.x;
             float f2 = 0.0F;
             if(f != 0.0F && f1 != 0.0F)
             {
                 f2 = ((float)trapezoid.top.right.y - (float)trapezoid.top.left.y) / f;
-                trpolygon.x[1] = trapezoid.left.x;
-                trpolygon.y[1] = (int)(f2 * ((float)trapezoid.left.x - (float)trapezoid.top.left.x) + (float)trapezoid.top.left.y);
+                trPoly.x[1] = trapezoid.left.x;
+                trPoly.y[1] = (int)(f2 * ((float)trapezoid.left.x - (float)trapezoid.top.left.x) + (float)trapezoid.top.left.y);
                 f2 = ((float)trapezoid.bottom.right.y - (float)trapezoid.bottom.left.y) / f1;
-                trpolygon.x[0] = trapezoid.left.x;
-                trpolygon.y[0] = (int)(f2 * ((float)trapezoid.left.x - (float)trapezoid.bottom.left.x) + (float)trapezoid.bottom.left.y);
+                trPoly.x[0] = trapezoid.left.x;
+                trPoly.y[0] = (int)(f2 * ((float)trapezoid.left.x - (float)trapezoid.bottom.left.x) + (float)trapezoid.bottom.left.y);
             }
             f = (float)trapezoid.top.right.x - (float)trapezoid.top.left.x;
             f1 = (float)trapezoid.bottom.right.x - (float)trapezoid.bottom.left.x;
@@ -72,22 +72,22 @@ public class Computation extends Component
             if(f != 0.0F && f1 != 0.0F)
             {
                 float f3 = ((float)trapezoid.top.right.y - (float)trapezoid.top.left.y) / f;
-                trpolygon.x[2] = trapezoid.right.x;
-                trpolygon.y[2] = (int)(f3 * ((float)trapezoid.right.x - (float)trapezoid.top.left.x) + (float)trapezoid.top.left.y);
+                trPoly.x[2] = trapezoid.right.x;
+                trPoly.y[2] = (int)(f3 * ((float)trapezoid.right.x - (float)trapezoid.top.left.x) + (float)trapezoid.top.left.y);
                 f3 = ((float)trapezoid.bottom.right.y - (float)trapezoid.bottom.left.y) / f1;
-                trpolygon.x[3] = trapezoid.right.x;
-                trpolygon.y[3] = (int)(f3 * ((float)trapezoid.right.x - (float)trapezoid.bottom.left.x) + (float)trapezoid.bottom.left.y);
+                trPoly.x[3] = trapezoid.right.x;
+                trPoly.y[3] = (int)(f3 * ((float)trapezoid.right.x - (float)trapezoid.bottom.left.x) + (float)trapezoid.bottom.left.y);
             }
         }
-        return trpolygon;
+        return trPoly;
     }
 
-    public static boolean areNotCrossing(Segment lsegment, Segment lsegment1)
+    public static boolean doNotIntersect(Segment seg1, Segment seg2)
     {
-        int i = counterClockWise(lsegment.getStartingPoint(), lsegment.getEndingPoint(), lsegment1.getStartingPoint());
-        int j = counterClockWise(lsegment.getStartingPoint(), lsegment.getEndingPoint(), lsegment1.getEndingPoint());
-        int k = counterClockWise(lsegment1.getStartingPoint(), lsegment1.getEndingPoint(), lsegment.getStartingPoint());
-        int l = counterClockWise(lsegment1.getStartingPoint(), lsegment1.getEndingPoint(), lsegment.getEndingPoint());
+        int i = counterClockWise(seg1.getStartingPoint(), seg1.getEndingPoint(), seg2.getStartingPoint());
+        int j = counterClockWise(seg1.getStartingPoint(), seg1.getEndingPoint(), seg2.getEndingPoint());
+        int k = counterClockWise(seg2.getStartingPoint(), seg2.getEndingPoint(), seg1.getStartingPoint());
+        int l = counterClockWise(seg2.getStartingPoint(), seg2.getEndingPoint(), seg1.getEndingPoint());
         return i * j < 0 && k * l < 0 || i * j * k * l == 0;
     }
 
@@ -113,20 +113,20 @@ public class Computation extends Component
         return res;
     }
 
-    public static void cutLine(Trapezoid trapezoid, Segment lsegment, boolean flag)
+    public static void cutLine(Trapezoid trapezoid, Segment segment, boolean flag)
     {
-        float f = lsegment.right.x * 100 - lsegment.left.x * 100;
+        float f = segment.right.x * 100 - segment.left.x * 100;
         if(f != 0.0F)
         {
             if(flag)
             {
-                float f2 = ((float)(lsegment.right.y * 100) - (float)(lsegment.left.y * 100)) / f;
-                trapezoid.left.up = (int)(f2 * ((float)(trapezoid.left.x * 100) - (float)(lsegment.left.x * 100)) + (float)(lsegment.left.y * 100));
+                float f2 = ((float)(segment.right.y * 100) - (float)(segment.left.y * 100)) / f;
+                trapezoid.left.up = (int)(f2 * ((float)(trapezoid.left.x * 100) - (float)(segment.left.x * 100)) + (float)(segment.left.y * 100));
                 trapezoid.left.up /= 100;
                 return;
             }
-            float f3 = ((float)(lsegment.right.y * 100) - (float)(lsegment.left.y * 100)) / f;
-            trapezoid.left.down = (int)(f3 * ((float)(trapezoid.left.x * 100) - (float)(lsegment.left.x * 100)) + (float)(lsegment.left.y * 100));
+            float f3 = ((float)(segment.right.y * 100) - (float)(segment.left.y * 100)) / f;
+            trapezoid.left.down = (int)(f3 * ((float)(trapezoid.left.x * 100) - (float)(segment.left.x * 100)) + (float)(segment.left.y * 100));
             trapezoid.left.down /= 100;
         }
     }
