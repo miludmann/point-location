@@ -1,4 +1,8 @@
-class Trapezoid
+
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public class Trapezoid
 {
 
     public Trapezoid next;

@@ -1,7 +1,9 @@
 import java.awt.Component;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
-class Computation extends Component
+public class Computation extends Component
 {
 
     Computation()

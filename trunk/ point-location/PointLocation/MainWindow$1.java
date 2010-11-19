@@ -1,7 +1,9 @@
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-final class MainWindow$1 extends WindowAdapter
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
+public final class MainWindow$1 extends WindowAdapter
 {
 
     MainWindow$1()

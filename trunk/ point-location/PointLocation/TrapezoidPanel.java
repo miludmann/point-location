@@ -1,10 +1,11 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/**
+ * @author Depoyant Guillaume & Ludmann Michaël
+ */
 @SuppressWarnings("serial")
-class TrapezoidPanel extends Panel
-    implements ActionListener
+public class TrapezoidPanel extends Panel implements ActionListener
 {
     Button build;
     Button clear;
@@ -68,7 +69,7 @@ class TrapezoidPanel extends Panel
         if(command == "computeMap")
             if(drawingArea.numSegments > 0)
             {
-                map.clear();
+                map.clrData();
                 drawingArea.repaintArea();
                 drawingArea.drawTrapezoids();
 
@@ -94,7 +95,7 @@ class TrapezoidPanel extends Panel
         if(command == "clear")
         {
             drawingArea.clear();
-            map.clear();
+            map.clrData();
             query.setEnabled(false);
             find.setEnabled(false);
             build.setEnabled(true);
