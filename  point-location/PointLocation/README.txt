@@ -15,7 +15,6 @@ README file  :
 -or use Subversion to check out a read-only working copy :
     svn checkout http://point-location.googlecode.com/svn/trunk/ point-location-read-only
 	
-
 ===============================================================================
 How to run the project :
 
